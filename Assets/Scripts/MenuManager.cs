@@ -45,9 +45,4 @@ public class MenuManager : MonoBehaviour {
         enableObject(GameOverScreen);
     }
 
-    public void enableVictoryScreen()
-    {
-        enableObject(VictoryScreen);
-    }
-
 }

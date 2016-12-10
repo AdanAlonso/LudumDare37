@@ -13,6 +13,7 @@ public class Player : MonoBehaviour {
 
     public GameObject bulletPrefab;
     public Transform shootPoint;
+    public GameObject cursorSprite;
     public float angleTime;
     public float timeBetweenShots;
 
@@ -44,6 +45,7 @@ public class Player : MonoBehaviour {
 
     IEnumerator Idle()
     {
+        cursorSprite.SetActive(false);
         while (state == States.Idle) {
             if (Input.anyKeyDown)
                 ChangeState(States.Angle);
@@ -53,6 +55,7 @@ public class Player : MonoBehaviour {
 
     IEnumerator Angle()
     {
+        cursorSprite.SetActive(true);
         Transform shootPointContainer = shootPoint.parent;
         float timer = 0f;
         bool angleGoingUp = true;
