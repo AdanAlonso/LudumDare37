@@ -14,12 +14,17 @@ public class Player : MonoBehaviour {
     public GameObject bulletPrefab;
     public Transform shootPoint;
     public GameObject cursorSprite;
+    public GameObject arm;
     public float angleTime;
     public float timeBetweenShots;
+
+    public Animator a;
+    Animator armA;
 
     void Start()
     {
         state = States.Idle;
+        armA = arm.GetComponent<Animator>();
         StartCoroutine(FSM());
     }
 
@@ -40,7 +45,9 @@ public class Player : MonoBehaviour {
 
     IEnumerator Idle()
     {
+        a.SetBool("idle", true);
         cursorSprite.SetActive(false);
+        arm.SetActive(false);
         while (state == States.Idle) {
             if (Input.anyKeyDown)
                 ChangeState(States.Angle);
@@ -50,13 +57,16 @@ public class Player : MonoBehaviour {
 
     IEnumerator Angle()
     {
+        a.SetBool("idle", false);
         cursorSprite.SetActive(true);
+        arm.SetActive(true);
+        armA.SetBool("shoot", false);
         Transform shootPointContainer = shootPoint.parent;
         float timer = 0f;
         bool angleGoingUp = true;
         while (state == States.Angle)
         {
-            while (timer < angleTime)
+            while (true)
             {
                 timer += Time.deltaTime;
                 shootPointContainer.rotation = angleGoingUp ? Quaternion.Euler(0, 0, timer / angleTime * 90f) 
@@ -70,6 +80,7 @@ public class Player : MonoBehaviour {
                     break;
                 yield return 0;
             }
+            armA.SetBool("shoot", true);
             GameObject bullet = Instantiate(bulletPrefab, shootPoint.position, shootPoint.rotation) as GameObject;
             bullet.transform.parent = transform;
             yield return new WaitForSeconds(timeBetweenShots);

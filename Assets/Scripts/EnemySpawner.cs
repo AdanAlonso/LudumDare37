@@ -35,7 +35,7 @@ public class EnemySpawner : MonoBehaviour {
         while (true) {
             Vector3 randomPoint = new Vector3(Random.Range(minX, maxX), Random.Range(minY, maxY), 0);
             Quaternion correction = vertical ? Quaternion.Euler(0f, -90f, -90f) : Quaternion.Euler(0f, -90f, 0f);
-            GameObject enemy = Instantiate(enemyPrefab, randomPoint, Quaternion.LookRotation(targetPosition - transform.position) * correction) as GameObject;
+            GameObject enemy = Instantiate(enemyPrefab, randomPoint, Quaternion.LookRotation(targetPosition - randomPoint) * correction) as GameObject;
             enemy.transform.parent = transform;
             yield return new WaitForSeconds(timeBetweenEnemies + Random.Range(-randomRange, randomRange));
             yield return 0;
