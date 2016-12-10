@@ -8,6 +8,7 @@ public class EnemySpawner : MonoBehaviour {
     public float timeBetweenEnemies;
     public float randomRange;
     public Transform target;
+    public bool vertical;
 
     BoxCollider2D c;
     float minX;
@@ -33,8 +34,8 @@ public class EnemySpawner : MonoBehaviour {
         yield return new WaitForSeconds(warmUpTime + Random.Range(-randomRange, randomRange));
         while (true) {
             Vector3 randomPoint = new Vector3(Random.Range(minX, maxX), Random.Range(minY, maxY), 0);
-            GameObject enemy = Instantiate(enemyPrefab, randomPoint, Quaternion.identity) as GameObject;
-            enemy.transform.LookAt(targetPosition, -Vector3.forward);
+            Quaternion correction = vertical ? Quaternion.Euler(0f, -90f, -90f) : Quaternion.Euler(0f, -90f, 0f);
+            GameObject enemy = Instantiate(enemyPrefab, randomPoint, Quaternion.LookRotation(targetPosition - transform.position) * correction) as GameObject;
             enemy.transform.parent = transform;
             yield return new WaitForSeconds(timeBetweenEnemies + Random.Range(-randomRange, randomRange));
             yield return 0;

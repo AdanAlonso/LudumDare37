@@ -6,8 +6,7 @@ public class MenuManager : MonoBehaviour {
 
     public static MenuManager instance;
 
-    public GameObject GameOverScreen;
-    public GameObject VictoryScreen;
+    public Fade fade;
 
     void Start()
     {
@@ -19,12 +18,20 @@ public class MenuManager : MonoBehaviour {
 
     public void loadScene(int sceneNumber)
     {
-        SceneManager.LoadScene(sceneNumber);
+        StartCoroutine(loadSceneCoroutine(sceneNumber));
     }
 
     public void resetScene()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        StartCoroutine(loadSceneCoroutine(SceneManager.GetActiveScene().buildIndex));
+    }
+
+    IEnumerator loadSceneCoroutine(int sceneNumber)
+    {
+        fade.FadeOut();
+        yield return new WaitForSecondsRealtime(fade.fadeTime);
+        Time.timeScale = 1;
+        SceneManager.LoadScene(sceneNumber);
     }
 
     public void quitGame()
@@ -34,15 +41,4 @@ public class MenuManager : MonoBehaviour {
         UnityEditor.EditorApplication.isPlaying = false;
         #endif
     }
-
-    public void enableObject(GameObject go)
-    {
-        go.SetActive(true);
-    }
-
-    public void enableGameOverScreen()
-    {
-        enableObject(GameOverScreen);
-    }
-
 }

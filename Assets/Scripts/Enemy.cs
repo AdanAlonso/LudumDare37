@@ -8,6 +8,8 @@ public class Enemy : MonoBehaviour {
     public delegate void PlayerHit();
     public static event PlayerHit onPlayerHit;
 
+    public SpriteRenderer s;
+
     void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.CompareTag("Bullet"))
         {

@@ -17,11 +17,6 @@ public class Player : MonoBehaviour {
     public float angleTime;
     public float timeBetweenShots;
 
-    void Awake()
-    {
-        Time.timeScale = 1;
-    }
-
     void Start()
     {
         state = States.Idle;
@@ -80,6 +75,10 @@ public class Player : MonoBehaviour {
             yield return new WaitForSeconds(timeBetweenShots);
             ChangeState(States.Idle);
         }
+    }
+
+    public void kill() {
+        ChangeState(States.Dead);
     }
 
     IEnumerator Dead()
