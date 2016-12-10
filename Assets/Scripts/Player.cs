@@ -16,6 +16,11 @@ public class Player : MonoBehaviour {
     public float angleTime;
     public float timeBetweenShots;
 
+    void Awake()
+    {
+        Time.timeScale = 1;
+    }
+
     void Start()
     {
         state = States.Idle;
@@ -34,7 +39,6 @@ public class Player : MonoBehaviour {
 
     void ChangeState(States newState)
     {
-        Debug.Log(state + "->" + newState);
         state = newState;
     }
 
@@ -68,7 +72,8 @@ public class Player : MonoBehaviour {
                     break;
                 yield return 0;
             }
-            Instantiate(bulletPrefab, shootPoint.position, shootPoint.rotation);
+            GameObject bullet = Instantiate(bulletPrefab, shootPoint.position, shootPoint.rotation) as GameObject;
+            bullet.transform.parent = transform;
             yield return new WaitForSeconds(timeBetweenShots);
             ChangeState(States.Idle);
         }
