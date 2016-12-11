@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Audio;
 using System.Collections;
 
@@ -13,6 +14,8 @@ public class AudioManager : MonoBehaviour
     public AudioSource sfxSrc;
     public AudioSource aimingSfxSrc;
 
+    public AudioClip[] bgm;
+
     void Start()
     {
         if (instance == null)
@@ -20,6 +23,22 @@ public class AudioManager : MonoBehaviour
         if (this != instance)
             Destroy(gameObject);
         DontDestroyOnLoad(this);
+    }
+
+    void OnEnable()
+    {
+        SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.activeSceneChanged -= SceneManager_activeSceneChanged;
+    }
+
+    private void SceneManager_activeSceneChanged(Scene arg0, Scene arg1)
+    {
+        bgmSrc.clip = bgm[SceneManager.GetActiveScene().buildIndex];
+        bgmSrc.Play();
     }
 
     public void playSfx(AudioClip sfx)
