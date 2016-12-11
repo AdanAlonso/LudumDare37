@@ -30,9 +30,16 @@ public class Enemy : MonoBehaviour {
             GetComponent<Rigidbody>().isKinematic = true;
             GetComponent<UnityStandardAssets.Utility.AutoMoveAndRotate>().enabled = false;
             a.SetTrigger("death");
-            Destroy(collision.gameObject);
             StartCoroutine(Scale());
             Destroy(gameObject, 1f);
+
+            GameObject bullet = collision.gameObject;
+            bullet.GetComponent<Collider>().enabled = false;
+            bullet.GetComponent<Rigidbody>().isKinematic = true;
+            bullet.GetComponent<UnityStandardAssets.Utility.AutoMoveAndRotate>().enabled = false;
+            bullet.transform.GetChild(0).GetComponent<SpriteRenderer>().enabled = false;
+            Destroy(bullet, 5f);
+
             AudioManager.instance.playSfx(deathSfx);
             if (onEnemyKilled != null)
                 onEnemyKilled();

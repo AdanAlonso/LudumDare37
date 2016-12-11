@@ -4,6 +4,7 @@ using System.Collections;
 public class EnemySpawner : MonoBehaviour {
 
     public GameObject enemyPrefab;
+    public GameObject enemyPrefabAlt;
     public float warmUpTime;
     public float timeBetweenEnemies;
     public float randomRange;
@@ -17,6 +18,9 @@ public class EnemySpawner : MonoBehaviour {
     float maxY;
     Vector3 targetPosition;
 
+    bool alt;
+    GameObject enemy;
+
     void Start() {
         c = GetComponent<BoxCollider2D>();
         minX = transform.position.x + c.offset.x - c.size.x / 2;
@@ -25,6 +29,9 @@ public class EnemySpawner : MonoBehaviour {
         maxY = transform.position.y + c.offset.y + c.size.y / 2;
         targetPosition = target.position;
         targetPosition.z = 0;
+
+        alt = PlayerPrefs.GetInt("alt") == 1;
+        enemy = alt ? enemyPrefabAlt : enemyPrefab;
 
         StartCoroutine(spawnEnemies());
     }
@@ -35,8 +42,8 @@ public class EnemySpawner : MonoBehaviour {
         while (true) {
             Vector3 randomPoint = new Vector3(Random.Range(minX, maxX), Random.Range(minY, maxY), 0);
             Quaternion correction = vertical ? Quaternion.Euler(0f, -90f, -90f) : Quaternion.Euler(0f, -90f, 0f);
-            GameObject enemy = Instantiate(enemyPrefab, randomPoint, Quaternion.LookRotation(targetPosition - randomPoint) * correction) as GameObject;
-            enemy.transform.parent = transform;
+            GameObject enemyInstance = Instantiate(enemy, randomPoint, Quaternion.LookRotation(targetPosition - randomPoint) * correction) as GameObject;
+            enemyInstance.transform.parent = transform;
             yield return new WaitForSeconds(timeBetweenEnemies + Random.Range(-randomRange, randomRange));
             yield return 0;
         }

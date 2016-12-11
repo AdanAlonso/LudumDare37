@@ -23,6 +23,18 @@ public class MenuManager : MonoBehaviour {
         StartCoroutine(loadSceneCoroutine(sceneNumber));
     }
 
+    public void play()
+    {
+        PlayerPrefs.SetInt("alt", 0);
+        StartCoroutine(loadSceneCoroutine(1));
+    }
+
+    public void playAlter()
+    {
+        PlayerPrefs.SetInt("alt", 1);
+        StartCoroutine(loadSceneCoroutine(1));
+    }
+
     public void resetScene()
     {
         StartCoroutine(loadSceneCoroutine(SceneManager.GetActiveScene().buildIndex));

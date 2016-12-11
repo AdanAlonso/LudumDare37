@@ -28,16 +28,26 @@ public class AudioManager : MonoBehaviour
     void OnEnable()
     {
         SceneManager.activeSceneChanged += SceneManager_activeSceneChanged;
+        Health.onGameOver += Health_onGameOver;
     }
 
     void OnDisable()
     {
         SceneManager.activeSceneChanged -= SceneManager_activeSceneChanged;
+        Health.onGameOver -= Health_onGameOver;
     }
 
     private void SceneManager_activeSceneChanged(Scene arg0, Scene arg1)
     {
         bgmSrc.clip = bgm[SceneManager.GetActiveScene().buildIndex];
+        bgmSrc.loop = true;
+        bgmSrc.Play();
+    }
+
+    private void Health_onGameOver()
+    {
+        bgmSrc.clip = bgm[2];
+        bgmSrc.loop = false;
         bgmSrc.Play();
     }
 
