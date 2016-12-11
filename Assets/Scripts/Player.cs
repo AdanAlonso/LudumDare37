@@ -18,6 +18,9 @@ public class Player : MonoBehaviour {
     public float angleTime;
     public float timeBetweenShots;
 
+    public AudioClip aimingSfx;
+    public AudioClip throwKnifeSfx;
+
     public Animator a;
     Animator armA;
 
@@ -66,25 +69,25 @@ public class Player : MonoBehaviour {
         bool angleGoingUp = true;
         while (state == States.Angle)
         {
-            while (true)
-            {
-                timer += Time.deltaTime;
-                shootPointContainer.rotation = angleGoingUp ? Quaternion.Euler(0, 0, timer / angleTime * 90f) 
-                                                            : Quaternion.Euler(0, 0, (angleTime - timer) / angleTime * 90f);
-                if ((angleGoingUp && Mathf.Abs(shootPointContainer.rotation.eulerAngles.z - 90f) < 1f) ||
-                   (!angleGoingUp && Mathf.Abs(shootPointContainer.rotation.eulerAngles.z) < 1f)) {
-                    timer = 0;
-                    angleGoingUp = !angleGoingUp;
-                }
-                if (Input.anyKeyDown)
-                    break;
-                yield return 0;
+            if (!AudioManager.instance.aimingSfxSrc.isPlaying)
+                AudioManager.instance.playAimingSfx(aimingSfx);
+            timer += Time.unscaledDeltaTime;
+            shootPointContainer.rotation = angleGoingUp ? Quaternion.Euler(0, 0, timer / angleTime * 90f) 
+                                                        : Quaternion.Euler(0, 0, (angleTime - timer) / angleTime * 90f);
+            if ((angleGoingUp && Mathf.Abs(shootPointContainer.rotation.eulerAngles.z - 90f) < 1f) ||
+                (!angleGoingUp && Mathf.Abs(shootPointContainer.rotation.eulerAngles.z) < 1f)) {
+                timer = 0;
+                angleGoingUp = !angleGoingUp;
             }
-            armA.SetBool("shoot", true);
-            GameObject bullet = Instantiate(bulletPrefab, shootPoint.position, shootPoint.rotation) as GameObject;
-            bullet.transform.parent = transform;
-            yield return new WaitForSeconds(timeBetweenShots);
-            ChangeState(States.Idle);
+            if (Input.anyKeyDown) {
+                armA.SetBool("shoot", true);
+                AudioManager.instance.playSfx(throwKnifeSfx);
+                GameObject bullet = Instantiate(bulletPrefab, shootPoint.position, shootPoint.rotation) as GameObject;
+                bullet.transform.parent = transform;
+                yield return new WaitForSeconds(timeBetweenShots);
+                ChangeState(States.Idle);
+            }
+            yield return 0;
         }
     }
 

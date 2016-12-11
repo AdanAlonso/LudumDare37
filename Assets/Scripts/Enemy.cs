@@ -9,20 +9,52 @@ public class Enemy : MonoBehaviour {
     public static event PlayerHit onPlayerHit;
 
     public SpriteRenderer s;
+    public Animator a;
 
-    void OnCollisionEnter(Collision collision) {
+    public float scaleTime;
+    public AnimationCurve scaleCurve;
+    public AudioClip deathSfx;
+    public AudioClip targetSfx;
+
+    Vector3 initialScale;
+
+    void Start()
+    {
+        initialScale = transform.localScale;
+    }
+
+        void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.CompareTag("Bullet"))
         {
+            GetComponent<Collider>().enabled = false;
+            GetComponent<Rigidbody>().isKinematic = true;
+            GetComponent<UnityStandardAssets.Utility.AutoMoveAndRotate>().enabled = false;
+            a.SetTrigger("death");
             Destroy(collision.gameObject);
-            Destroy(gameObject);
+            StartCoroutine(Scale());
+            Destroy(gameObject, 1f);
+            AudioManager.instance.playSfx(deathSfx);
             if (onEnemyKilled != null)
                 onEnemyKilled();
         }
         else if (collision.gameObject.CompareTag("Target"))
         {
+            AudioManager.instance.playSfx(targetSfx);
             Destroy(gameObject);
             if (onPlayerHit != null)
                 onPlayerHit();
         }
+    }
+
+    IEnumerator Scale()
+    {
+        float elapsed = 0f;
+        while (elapsed < scaleTime)
+        {
+            transform.localScale = Vector3.LerpUnclamped(Vector3.zero, initialScale, scaleCurve.Evaluate(elapsed / scaleTime));
+            elapsed += Time.deltaTime;
+            yield return 0;
+        }
+        transform.localScale = initialScale;
     }
 }

@@ -5,6 +5,8 @@ using System.Collections;
 public class MenuManager : MonoBehaviour {
 
     public static MenuManager instance;
+    public GameObject menuGO;
+    public GameObject creditsGO;
 
     public Fade fade;
 
@@ -40,5 +42,10 @@ public class MenuManager : MonoBehaviour {
         #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
         #endif
+    }
+
+    public void credits() {
+        menuGO.SetActive(!menuGO.activeInHierarchy);
+        creditsGO.SetActive(!creditsGO.activeInHierarchy);
     }
 }
