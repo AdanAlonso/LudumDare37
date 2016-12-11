@@ -51,7 +51,7 @@ public class Player : MonoBehaviour {
         a.SetBool("idle", true);
         cursorSprite.SetActive(false);
         arm.SetActive(false);
-        while (state == States.Idle) {
+        while (state == States.Idle || (Input.touchCount > 0)) {
             if (Input.anyKeyDown)
                 ChangeState(States.Angle);
             yield return 0;
@@ -74,12 +74,12 @@ public class Player : MonoBehaviour {
             timer += Time.unscaledDeltaTime;
             shootPointContainer.rotation = angleGoingUp ? Quaternion.Euler(0, 0, timer / angleTime * 90f) 
                                                         : Quaternion.Euler(0, 0, (angleTime - timer) / angleTime * 90f);
-            if ((angleGoingUp && Mathf.Abs(shootPointContainer.rotation.eulerAngles.z - 90f) < 1f) ||
-                (!angleGoingUp && Mathf.Abs(shootPointContainer.rotation.eulerAngles.z) < 1f)) {
+            if ((angleGoingUp && Mathf.Abs(shootPointContainer.rotation.eulerAngles.z - 90f) < 5f) ||
+                (!angleGoingUp && Mathf.Abs(shootPointContainer.rotation.eulerAngles.z) < 5f)) {
                 timer = 0;
                 angleGoingUp = !angleGoingUp;
             }
-            if (Input.anyKeyDown) {
+            if (Input.anyKeyDown || (Input.touchCount > 0)) {
                 armA.SetBool("shoot", true);
                 AudioManager.instance.playSfx(throwKnifeSfx);
                 GameObject bullet = Instantiate(bulletPrefab, shootPoint.position, shootPoint.rotation) as GameObject;
